@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { FormEvent, useState } from "react"
 import appPreviewImg from "../assets/app-nlw-worldcup-preview.png"
 import iconCheck from "../assets/icon-check.svg"
 import logoImg from "../assets/logo.svg"
@@ -12,6 +13,29 @@ interface HomeProps {
 }
 
 export default function Home(props: HomeProps) {
+  const [poolTitle, setPoolTitle] = useState("")
+
+ async function createPool (event: FormEvent){
+    event.preventDefault()
+
+    try {
+      const response = await api.post("/pools", {
+          title: poolTitle
+      })
+
+      const {code} = response.data
+
+      navigator.clipboard.writeText(code)
+
+      alert('Pool created, code copied to the clipboard.')
+      
+      setPoolTitle('')
+    } catch (error) {
+      console.log(error);      
+      alert('Ops. Something went wrong while creating your Pool, please try again!')
+    }
+    
+  }
   return (
     <div className="max-w-[1124px] h-screen mx-auto grid grid-cols-2 gap-24 items-center">
       <main>
@@ -28,10 +52,12 @@ export default function Home(props: HomeProps) {
           </strong>
         </div>
 
-        <form className="mt-10 flex gap-2">
+        <form onSubmit={createPool} className="mt-10 flex gap-2">
           <input
             className="flex-1 px-6 py-4 rounded bg-gray-800 text-sm text-gray-400 border border-gray-600"
             type="text" 
+            value={poolTitle}
+            onChange={(event) => setPoolTitle(event.target.value)}
             required 
             placeholder="What would be your pool name?"
           />
@@ -80,7 +106,7 @@ export default function Home(props: HomeProps) {
 }
 
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const [poolCountResponse, guessCountResponse, userCountResponse] = await Promise.all([
     api.get("/pools/count"),
     api.get("/guesses/count"),
