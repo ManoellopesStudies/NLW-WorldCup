@@ -2,6 +2,9 @@ import { Roboto_400Regular, Roboto_500Medium, Roboto_700Bold, useFonts } from '@
 import { NativeBaseProvider, StatusBar } from "native-base";
 import { Loading } from "./src/components/Loading";
 import { AuthContextProvider } from './src/contexts/AuthContext';
+import { Find } from './src/screens/Find';
+import { New } from './src/screens/New';
+import { Pools } from './src/screens/Pools';
 import { SignIn } from './src/screens/SignIn';
 import { THEME } from "./src/styles/theme";
 
@@ -22,7 +25,7 @@ export default function App() {
         />
         
         {
-          fontsLoaded ? <SignIn /> : <Loading />
+          fontsLoaded ? <Pools /> : <Loading />
         } 
       </AuthContextProvider>  
     </NativeBaseProvider>
